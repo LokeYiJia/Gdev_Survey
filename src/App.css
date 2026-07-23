@@ -1,0 +1,204 @@
+:root {
+  font-family: Helvetica, Arial, sans-serif;
+  color: #18263a;
+  background: #f4f7fb;
+  font-synthesis: none;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: #eef3f8;
+}
+
+button, input { font: inherit; }
+.page-shell { padding: 0; }
+
+.survey {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  overflow: hidden;
+  padding: 115px 24px 190px;
+  background: #fff url("/survey-background.png") center / 100% 100% no-repeat;
+}
+
+.survey-header,
+.form-layout,
+.survey-footer {
+  width: min(100%, 900px);
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.survey-header {
+  min-height: 110px;
+  padding: 24px 32px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid #d8dee7;
+}
+
+.brand-name {
+  color: #0753a6;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.55rem;
+  font-weight: 700;
+}
+
+.survey-header h1 {
+  grid-column: 2;
+  margin: 0;
+  color: #003b71;
+  font-size: clamp(1.75rem, 5vw, 2.65rem);
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+
+.form-layout {
+  display: block;
+  background: rgba(255, 255, 255, 0.94);
+}
+
+section { padding: 24px 32px 28px; }
+section + section { border-top: 1px solid #d8dee7; }
+
+h2 {
+  margin: -24px -32px 24px;
+  padding: 12px 20px;
+  color: #fff;
+  background: #003b71;
+  font-size: 1.13rem;
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.full-width { grid-column: 1 / -1; }
+.field { display: grid; gap: 7px; font-weight: 700; }
+
+.field input {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 12px;
+  color: #18263a;
+  border: 1px solid #8b98a8;
+  border-radius: 3px;
+  background: #fff;
+}
+
+.choice-group {
+  min-width: 0;
+  margin: 0 0 25px;
+  padding: 0;
+  border: 0;
+}
+
+legend { margin-bottom: 11px; font-weight: 700; }
+
+.choices {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px 18px;
+}
+
+.checkbox-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+.choice,
+.consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  line-height: 1.35;
+  cursor: pointer;
+}
+
+.choice input,
+.consent input {
+  flex: 0 0 auto;
+  width: 19px;
+  height: 19px;
+  margin: 0;
+  accent-color: #003b71;
+}
+
+.conditional-field { max-width: 420px; margin: -10px 0 25px; }
+.consent { margin-bottom: 0; }
+
+.survey-footer {
+  display: block;
+  padding: 0 32px 30px;
+  background: rgba(255, 255, 255, 0.94);
+}
+
+button {
+  display: block;
+  min-width: 180px;
+  min-height: 48px;
+  margin: 0 auto;
+  padding: 12px 24px;
+  border: 0;
+  border-radius: 3px;
+  color: #fff;
+  background: #d71920;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) { background: #b51218; }
+button:disabled { opacity: 0.65; cursor: wait; }
+
+input:focus-visible,
+button:focus-visible {
+  outline: 3px solid #f5b400;
+  outline-offset: 2px;
+}
+
+.status {
+  margin: 18px 0 0;
+  padding: 12px;
+  border-radius: 3px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.status.success { color: #12612d; background: #e7f6ec; }
+.status.error { color: #8d1117; background: #fdebed; }
+.status.loading { color: #003b71; background: #e8f1f8; }
+
+@media (max-width: 620px) {
+  .page-shell { padding: 0; }
+  .survey {
+    width: 100%;
+    padding: 80px 12px 130px;
+    box-shadow: none;
+  }
+  .survey-header {
+    min-height: 104px;
+    padding: 20px 16px;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    text-align: center;
+  }
+  .brand-name { font-size: 1.35rem; }
+  .survey-header h1 { grid-column: 1; font-size: 1.55rem; }
+  section { padding: 22px 18px 26px; }
+  h2 { margin: -22px -18px 22px; }
+  .field-grid, .choices, .checkbox-grid { grid-template-columns: 1fr; }
+  .full-width { grid-column: auto; }
+  .choices { gap: 12px; }
+  .survey-footer { padding: 0 18px 26px; }
+}
+
+@media print {
+  body { background: #fff; }
+  .page-shell { padding: 0; }
+  .survey { box-shadow: none; }
+}
