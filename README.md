@@ -7,7 +7,7 @@ React form
   -> POST /api/submit-lead
   -> Cloudflare Pages Function
   -> Google Apps Script Web App
-  -> "Leads Gathering" Google Sheet tab
+  -> "GDev Leads Gathering" Google Sheet tab
 ```
 
 The browser never receives or calls the Apps Script URL. There is no login or form access code.
@@ -41,7 +41,7 @@ Do not commit a real webhook URL. `.env.example` intentionally contains only an 
 
 ## Google Sheet setup
 
-Create or use a sheet tab named exactly `Leads Gathering`. Row 1 must have these exact headers, in this order:
+Create or use a sheet tab named exactly `GDev Leads Gathering`. Row 1 must have these exact headers, in this order:
 
 1. Date
 2. Full Name

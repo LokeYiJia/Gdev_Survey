@@ -1,4 +1,4 @@
-var SHEET_NAME = "Leads Gathering";
+var SHEET_NAME = "GDev Leads Gathering";
 var EXPECTED_HEADERS = [
   "Date",
   "Full Name",
