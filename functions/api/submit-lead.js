@@ -41,7 +41,7 @@ const ALLOWED = Object.freeze({
     "Accident and disability coverage",
     "Critical illness planning",
   ],
-  isGreatEasternStaff: ["Yes", "No"],
+  participantType: ["Great Eastern Staff", "GDG KL Participant"],
 });
 
 const json = (body, status = 200) =>
@@ -179,7 +179,7 @@ export async function onRequest(context) {
       data.financialPriorities,
       "financialPriorities",
     );
-    const geStaff = allowedValue(data.isGreatEasternStaff, "isGreatEasternStaff");
+    const whoAreYou = allowedValue(data.participantType, "participantType");
     if (data.consent !== true) throw new Error("consent must be true.");
 
     if (!env?.GOOGLE_SHEETS_WEBHOOK_URL) {
@@ -193,7 +193,7 @@ export async function onRequest(context) {
       fullName,
       mobileNumber,
       icNum,
-      geStaff,
+      whoAreYou,
       agentName,
       agentId,
       gmName,

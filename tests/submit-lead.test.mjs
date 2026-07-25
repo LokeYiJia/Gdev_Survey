@@ -20,7 +20,7 @@ const validPayload = () => ({
   monthlyPersonalIncome: "RM3-6k",
   existingInsurancePlans: ["Medical Card", "Savings"],
   financialPriorities: ["Build emergency fund"],
-  isGreatEasternStaff: "No",
+  participantType: "GDG KL Participant",
   consent: true,
 });
 
@@ -111,7 +111,7 @@ test("forwards only expected trimmed Sheet fields in exact key order", async (t)
     "fullName",
     "mobileNumber",
     "icNum",
-    "geStaff",
+    "whoAreYou",
     "agentName",
     "agentId",
     "gmName",
@@ -126,9 +126,9 @@ test("forwards only expected trimmed Sheet fields in exact key order", async (t)
   assert.equal(forwarded.fullName, "Alex Tan");
   assert.equal(forwarded.currentInsuranceCompany, "Prudential");
   assert.equal(forwarded.existingInsurancePlans, "Medical Card, Savings");
-  assert.equal(forwarded.geStaff, "No");
+  assert.equal(forwarded.whoAreYou, "GDG KL Participant");
   assert.equal("consent" in forwarded, false);
-  assert.equal("isGreatEasternStaff" in forwarded, false);
+  assert.equal("participantType" in forwarded, false);
   assert.equal("employmentOther" in forwarded, false);
 });
 

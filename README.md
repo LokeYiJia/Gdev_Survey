@@ -47,7 +47,7 @@ Create or use a sheet tab named exactly `GDev Leads Gathering`. Row 1 must have 
 2. Full Name
 3. Mobile Number
 4. IC Number
-5. GE Staff
+5. Who Are You
 6. Agent Name
 7. Agent ID
 8. GM Name
@@ -75,7 +75,7 @@ Every Apps Script code change requires a **new Web App deployment version** (or 
 
 ## Submission contract
 
-The Pages Function accepts only `POST` with `application/json`, limits request size, trims text, validates dates, phone numbers, IC last-four digits, allowlisted choices, required checkbox groups, conditional employment detail, Great Eastern staff selection, and consent.
+The Pages Function accepts only `POST` with `application/json`, limits request size, trims text, validates dates, phone numbers, IC last-four digits, allowlisted choices, required checkbox groups, conditional employment detail, participant type, and consent.
 
 It forwards only these keys to Apps Script, in this order:
 
@@ -85,7 +85,7 @@ It forwards only these keys to Apps Script, in this order:
   "fullName": "",
   "mobileNumber": "",
   "icNum": "",
-  "geStaff": "",
+  "whoAreYou": "",
   "agentName": "",
   "agentId": "",
   "gmName": "",
@@ -99,7 +99,7 @@ It forwards only these keys to Apps Script, in this order:
 }
 ```
 
-Checkbox arrays are converted to comma-separated strings. Consent and conditional helper fields are validated but not forwarded. The staff answer is forwarded as `geStaff`.
+Checkbox arrays are converted to comma-separated strings. Consent and conditional helper fields are validated but not forwarded. The participant type is forwarded as `whoAreYou`.
 
 The frontend does not set a short request timeout or automatically retry. It disables submission immediately and also uses an in-flight guard against duplicate clicks. Values are cleared only after confirmed success and retained after failure.
 

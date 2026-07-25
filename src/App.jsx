@@ -45,7 +45,7 @@ const initialForm = {
   fullName: "",
   mobileNumber: "",
   icNumber: "",
-  isGreatEasternStaff: "",
+  participantType: "",
   currentInsuranceCompany: "",
   ageBand: "",
   maritalStatus: "",
@@ -175,7 +175,7 @@ export default function App() {
       monthlyPersonalIncome: form.monthlyPersonalIncome,
       existingInsurancePlans: form.existingInsurancePlans,
       financialPriorities: form.financialPriorities,
-      isGreatEasternStaff: form.isGreatEasternStaff,
+      participantType: form.participantType,
       consent: form.consent,
     };
 
@@ -236,10 +236,10 @@ export default function App() {
             </label>
             <div className="full-width">
               <ChoiceGroup
-                legend="Great Eastern staff?"
-                name="isGreatEasternStaff"
-                options={["Yes", "No"]}
-                value={form.isGreatEasternStaff}
+                legend="Who are you?"
+                name="participantType"
+                options={["Great Eastern Staff", "GDG KL Participant"]}
+                value={form.participantType}
                 onChange={update}
               />
             </div>
