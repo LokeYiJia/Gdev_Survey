@@ -76,6 +76,8 @@ function doPost(e) {
     ];
 
     var targetRow = sheet.getLastRow() + 1;
+    // Keep the complete IC as text so a leading zero is not removed.
+    sheet.getRange(targetRow, 4).setNumberFormat("@");
     sheet.getRange(targetRow, 1, 1, row.length).setValues([row]);
     SpreadsheetApp.flush();
     return jsonResponse_({ success: true });

@@ -114,9 +114,11 @@ export default function App() {
 
   const update = ({ target }) => {
     const { name, value, type, checked } = target;
+    const nextValue =
+      name === "icNumber" ? value.replace(/\D/g, "").slice(0, 12) : value;
     setForm((current) => ({
       ...current,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: type === "checkbox" ? checked : nextValue,
     }));
   };
 
@@ -143,8 +145,8 @@ export default function App() {
     }
 
     const icDigits = form.icNumber.replace(/\D/g, "");
-    if (icDigits.length < 4) {
-      setStatus({ type: "error", message: "Please enter a valid full IC number." });
+    if (icDigits.length !== 12) {
+      setStatus({ type: "error", message: "Please enter exactly 12 digits for the IC number." });
       return;
     }
 
@@ -163,7 +165,7 @@ export default function App() {
       date: localDate,
       fullName: form.fullName,
       mobileNumber: form.mobileNumber,
-      icNum: icDigits.slice(-4),
+      icNum: icDigits,
       agentName: "",
       agentId: "",
       gmName: "",
@@ -232,7 +234,7 @@ export default function App() {
             </label>
             <label className="field">
               <span>IC Number (full number) *</span>
-              <input name="icNumber" value={form.icNumber} onChange={update} required maxLength="30" inputMode="numeric" autoComplete="off" />
+              <input name="icNumber" value={form.icNumber} onChange={update} required pattern="[0-9]{12}" title="Enter exactly 12 digits" maxLength="12" inputMode="numeric" autoComplete="off" />
             </label>
             <div className="full-width">
               <ChoiceGroup

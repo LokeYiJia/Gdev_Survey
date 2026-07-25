@@ -59,7 +59,7 @@ Create or use a sheet tab named exactly `GDev Leads Gathering`. Row 1 must have 
 14. Existing Insurance Plan
 15. Financial Priorities in the next 12 months
 
-The current survey does not collect agent/GM details, so Apps Script writes blank values for those columns. The browser collects the full IC for the participant's convenience, but sends only its last four digits to the `IC Number` column.
+The current survey does not collect agent/GM details, so Apps Script writes blank values for those columns. The browser accepts and submits exactly 12 IC digits to the `IC Number` column.
 
 Apps Script verifies row 1 without modifying it, escapes formula-like text, and uses a script-wide lock around each append.
 
@@ -75,7 +75,7 @@ Every Apps Script code change requires a **new Web App deployment version** (or 
 
 ## Submission contract
 
-The Pages Function accepts only `POST` with `application/json`, limits request size, trims text, validates dates, phone numbers, IC last-four digits, allowlisted choices, required checkbox groups, conditional employment detail, participant type, and consent.
+The Pages Function accepts only `POST` with `application/json`, limits request size, trims text, validates dates, phone numbers, exactly 12 IC digits, allowlisted choices, required checkbox groups, conditional employment detail, participant type, and consent.
 
 It forwards only these keys to Apps Script, in this order:
 

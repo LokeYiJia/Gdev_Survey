@@ -8,7 +8,7 @@ const validPayload = () => ({
   date: "2026-07-23",
   fullName: "  Alex Tan  ",
   mobileNumber: "+60 12-345 6789",
-  icNum: "1234",
+  icNum: "012345678901",
   agentName: "",
   agentId: "",
   gmName: "",
@@ -125,11 +125,21 @@ test("forwards only expected trimmed Sheet fields in exact key order", async (t)
   ]);
   assert.equal(forwarded.fullName, "Alex Tan");
   assert.equal(forwarded.currentInsuranceCompany, "Prudential");
+  assert.equal(forwarded.icNum, "012345678901");
   assert.equal(forwarded.existingInsurancePlans, "Medical Card, Savings");
   assert.equal(forwarded.whoAreYou, "GDG KL Participant");
   assert.equal("consent" in forwarded, false);
   assert.equal("participantType" in forwarded, false);
   assert.equal("employmentOther" in forwarded, false);
+});
+
+test("rejects an IC number that is not exactly 12 digits", async () => {
+  const payload = validPayload();
+  payload.icNum = "1234";
+  const response = await call(payload);
+  assert.equal(response.status, 400);
+  const result = await response.json();
+  assert.equal(result.error, "icNum must contain exactly 12 digits.");
 });
 
 test("formats an Others employment value only after validating its detail", async (t) => {

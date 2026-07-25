@@ -144,8 +144,8 @@ export async function onRequest(context) {
       throw new Error("mobileNumber must contain 8 to 15 digits.");
     }
 
-    const icNum = cleanText(data.icNum, "icNum", { required: true, max: 4 });
-    if (!/^\d{4}$/.test(icNum)) throw new Error("icNum must contain exactly four digits.");
+    const icNum = cleanText(data.icNum, "icNum", { required: true, max: 12 });
+    if (!/^\d{12}$/.test(icNum)) throw new Error("icNum must contain exactly 12 digits.");
 
     const agentName = cleanText(data.agentName, "agentName", { max: 100 });
     const agentId = cleanText(data.agentId, "agentId", { max: 50 });
