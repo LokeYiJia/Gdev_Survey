@@ -29,6 +29,13 @@ function safeCell_(value) {
   return /^[=+\-@]/.test(text) ? "'" + text : text;
 }
 
+function forcedTextCell_(value) {
+  var text = value === null || value === undefined ? "" : String(value);
+  // A leading apostrophe tells Sheets to preserve the value as text. The
+  // apostrophe is not displayed in the cell.
+  return text === "" ? "" : "'" + text;
+}
+
 function doPost(e) {
   var lock = LockService.getScriptLock();
   try {
@@ -60,8 +67,8 @@ function doPost(e) {
     var row = [
       safeCell_(data.date),
       safeCell_(data.fullName),
-      safeCell_(data.mobileNumber),
-      safeCell_(data.icNum),
+      forcedTextCell_(data.mobileNumber),
+      forcedTextCell_(data.icNum),
       safeCell_(data.whoAreYou),
       safeCell_(data.agentName),
       safeCell_(data.agentId),
