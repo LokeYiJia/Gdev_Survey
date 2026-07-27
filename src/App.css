@@ -54,7 +54,7 @@ button, input { font: inherit; }
   grid-column: 2;
   margin: 0;
   color: #ed1b2f;
-  font-family: "Merriweather", Georgia, "Times New Roman", serif;
+  font-family: "Avenir Next Rounded", "Avenir Next", "Nunito Sans", Arial, Helvetica, sans-serif;
   font-size: clamp(1.75rem, 5vw, 2.65rem);
   font-weight: 700;
   letter-spacing: 0.01em;
