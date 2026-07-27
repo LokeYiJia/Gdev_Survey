@@ -64,6 +64,14 @@ function doPost(e) {
       }
     }
 
+    // Google Sheets tables may copy "Automatic" formatting into new rows.
+    // Enforce plain text for all Mobile Number and IC Number data cells before
+    // writing so leading zeroes cannot be interpreted as numeric formatting.
+    var existingDataRowCount = sheet.getMaxRows() - 1;
+    if (existingDataRowCount > 0) {
+      sheet.getRange(2, 3, existingDataRowCount, 2).setNumberFormat("@");
+    }
+
     var row = [
       safeCell_(data.date),
       safeCell_(data.fullName),
@@ -86,6 +94,8 @@ function doPost(e) {
     // Keep Mobile Number and IC Number as text so leading zeroes are not removed.
     sheet.getRange(targetRow, 3, 1, 2).setNumberFormat("@");
     sheet.getRange(targetRow, 1, 1, row.length).setValues([row]);
+    // Reapply after writing in case a Sheets table copied its column format.
+    sheet.getRange(targetRow, 3, 1, 2).setNumberFormat("@");
     SpreadsheetApp.flush();
     return jsonResponse_({ success: true });
   } catch (error) {

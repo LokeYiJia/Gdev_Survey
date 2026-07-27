@@ -61,7 +61,7 @@ Create or use a sheet tab named exactly `GDev Leads Gathering`. Row 1 must have 
 
 The current survey does not collect agent/GM details, so Apps Script writes blank values for those columns. The browser accepts and submits exactly 12 IC digits to the `IC Number` column.
 
-Apps Script verifies row 1 without modifying it, escapes formula-like text, and uses a script-wide lock around each append. It both formats Mobile Number and IC Number cells as plain text and writes them with a Sheets text marker so leading zeroes survive table auto-typing.
+Apps Script verifies row 1 without modifying it, escapes formula-like text, and uses a script-wide lock around each append. Before each append it enforces plain-text formatting across the Mobile Number and IC Number data columns, writes both values with a Sheets text marker, and reapplies plain text to the new cells so leading zeroes survive Google Sheets table auto-formatting.
 
 ## Google Apps Script deployment
 
