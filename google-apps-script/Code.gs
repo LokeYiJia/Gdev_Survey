@@ -69,7 +69,8 @@ function doPost(e) {
     // writing so leading zeroes cannot be interpreted as numeric formatting.
     var existingDataRowCount = sheet.getMaxRows() - 1;
     if (existingDataRowCount > 0) {
-      sheet.getRange(2, 3, existingDataRowCount, 2).setNumberFormat("@");
+      sheet.getRange(2, 3, existingDataRowCount, 1).setNumberFormat("@");
+      sheet.getRange(2, 4, existingDataRowCount, 1).setNumberFormat("@");
     }
 
     var row = [
@@ -92,10 +93,12 @@ function doPost(e) {
 
     var targetRow = sheet.getLastRow() + 1;
     // Keep Mobile Number and IC Number as text so leading zeroes are not removed.
-    sheet.getRange(targetRow, 3, 1, 2).setNumberFormat("@");
+    sheet.getRange(targetRow, 3).setNumberFormat("@");
+    sheet.getRange(targetRow, 4).setNumberFormat("@");
     sheet.getRange(targetRow, 1, 1, row.length).setValues([row]);
     // Reapply after writing in case a Sheets table copied its column format.
-    sheet.getRange(targetRow, 3, 1, 2).setNumberFormat("@");
+    sheet.getRange(targetRow, 3).setNumberFormat("@");
+    sheet.getRange(targetRow, 4).setNumberFormat("@");
     SpreadsheetApp.flush();
     return jsonResponse_({ success: true });
   } catch (error) {
