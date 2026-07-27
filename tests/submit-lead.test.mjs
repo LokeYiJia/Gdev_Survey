@@ -13,11 +13,6 @@ const validPayload = () => ({
   agentId: "",
   gmName: "",
   currentInsuranceCompany: " Prudential ",
-  ageBand: "25-34",
-  maritalStatus: "Single",
-  employmentType: "Salaried",
-  employmentOther: "",
-  monthlyPersonalIncome: "RM3-6k",
   existingInsurancePlans: ["Medical Card", "Savings"],
   financialPriorities: ["Build emergency fund"],
   participantType: "GDG KL Participant",
@@ -61,7 +56,7 @@ test("rejects oversized bodies", async () => {
   assert.equal(response.status, 413);
 });
 
-test("rejects invalid dropdown values before calling Apps Script", async (t) => {
+test("rejects invalid participant types before calling Apps Script", async (t) => {
   const originalFetch = globalThis.fetch;
   let called = false;
   globalThis.fetch = async () => {
@@ -73,7 +68,7 @@ test("rejects invalid dropdown values before calling Apps Script", async (t) => 
   });
 
   const payload = validPayload();
-  payload.ageBand = "18-99";
+  payload.participantType = "Unknown participant";
   const response = await call(payload);
   assert.equal(response.status, 400);
   assert.equal(called, false);
@@ -116,10 +111,6 @@ test("forwards only expected trimmed Sheet fields in exact key order", async (t)
     "agentId",
     "gmName",
     "currentInsuranceCompany",
-    "ageBand",
-    "maritalStatus",
-    "employmentType",
-    "monthlyPersonalIncome",
     "existingInsurancePlans",
     "financialPriorities",
   ]);
@@ -130,7 +121,10 @@ test("forwards only expected trimmed Sheet fields in exact key order", async (t)
   assert.equal(forwarded.whoAreYou, "GDG KL Participant");
   assert.equal("consent" in forwarded, false);
   assert.equal("participantType" in forwarded, false);
-  assert.equal("employmentOther" in forwarded, false);
+  assert.equal("ageBand" in forwarded, false);
+  assert.equal("maritalStatus" in forwarded, false);
+  assert.equal("employmentType" in forwarded, false);
+  assert.equal("monthlyPersonalIncome" in forwarded, false);
 });
 
 test("rejects an IC number that is not exactly 12 digits", async () => {
@@ -140,24 +134,6 @@ test("rejects an IC number that is not exactly 12 digits", async () => {
   assert.equal(response.status, 400);
   const result = await response.json();
   assert.equal(result.error, "icNum must contain exactly 12 digits.");
-});
-
-test("formats an Others employment value only after validating its detail", async (t) => {
-  const originalFetch = globalThis.fetch;
-  let forwarded;
-  globalThis.fetch = async (_url, init) => {
-    forwarded = JSON.parse(init.body);
-    return new Response('{"success":true}');
-  };
-  t.after(() => {
-    globalThis.fetch = originalFetch;
-  });
-  const payload = validPayload();
-  payload.employmentType = "Others";
-  payload.employmentOther = "Freelancer";
-  const response = await call(payload);
-  assert.equal(response.status, 200);
-  assert.equal(forwarded.employmentType, "Others: Freelancer");
 });
 
 test("propagates Google Apps Script JSON failures without exposing its URL", async (t) => {

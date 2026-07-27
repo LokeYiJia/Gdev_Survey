@@ -1,23 +1,6 @@
 const MAX_BODY_BYTES = 16_384;
 
 const ALLOWED = Object.freeze({
-  ageBand: ["<25", "25-34", "35-44", "45-54", "55-64", "65+"],
-  maritalStatus: [
-    "Single",
-    "Married",
-    "Married with children",
-    "Divorced / widowed",
-  ],
-  employmentType: [
-    "Salaried",
-    "Self-employed",
-    "Business owner",
-    "Homemaker",
-    "Retired",
-    "Student",
-    "Others",
-  ],
-  monthlyPersonalIncome: ["<RM3k", "RM3-6k", "RM6-10k", "RM10-20k", ">RM20k"],
   existingInsurancePlans: [
     "Medical Card",
     "Life / Term",
@@ -155,22 +138,6 @@ export async function onRequest(context) {
       "currentInsuranceCompany",
       { max: 100 },
     );
-    const ageBand = allowedValue(data.ageBand, "ageBand");
-    const maritalStatus = allowedValue(data.maritalStatus, "maritalStatus");
-    const employmentTypeChoice = allowedValue(data.employmentType, "employmentType");
-    const employmentOther = cleanText(data.employmentOther, "employmentOther", { max: 80 });
-    if (employmentTypeChoice === "Others" && !employmentOther) {
-      throw new Error("employmentOther is required when employmentType is Others.");
-    }
-    if (employmentTypeChoice !== "Others" && employmentOther) {
-      throw new Error("employmentOther is only valid when employmentType is Others.");
-    }
-    const employmentType =
-      employmentTypeChoice === "Others" ? `Others: ${employmentOther}` : employmentTypeChoice;
-    const monthlyPersonalIncome = allowedValue(
-      data.monthlyPersonalIncome,
-      "monthlyPersonalIncome",
-    );
     const existingInsurancePlans = allowedArray(
       data.existingInsurancePlans,
       "existingInsurancePlans",
@@ -198,10 +165,6 @@ export async function onRequest(context) {
       agentId,
       gmName,
       currentInsuranceCompany,
-      ageBand,
-      maritalStatus,
-      employmentType,
-      monthlyPersonalIncome,
       existingInsurancePlans: existingInsurancePlans.join(", "),
       financialPriorities: financialPriorities.join(", "),
     };

@@ -9,10 +9,6 @@ var EXPECTED_HEADERS = [
   "Agent ID",
   "GM Name",
   "Current Insurance Company",
-  "Age Band",
-  "Marital Status",
-  "Employment Type",
-  "Monthly Income",
   "Existing Insurance Plan",
   "Financial Priorities in the next 12 months"
 ];
@@ -83,10 +79,6 @@ function doPost(e) {
       safeCell_(data.agentId),
       safeCell_(data.gmName),
       safeCell_(data.currentInsuranceCompany),
-      safeCell_(data.ageBand),
-      safeCell_(data.maritalStatus),
-      safeCell_(data.employmentType),
-      safeCell_(data.monthlyPersonalIncome),
       safeCell_(data.existingInsurancePlans),
       safeCell_(data.financialPriorities)
     ];

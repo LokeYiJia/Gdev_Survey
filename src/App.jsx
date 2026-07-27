@@ -1,22 +1,5 @@
 import React, { useRef, useState } from "react";
 
-const AGE_BANDS = ["<25", "25-34", "35-44", "45-54", "55-64", "65+"];
-const MARITAL_STATUSES = [
-  "Single",
-  "Married",
-  "Married with children",
-  "Divorced / widowed",
-];
-const EMPLOYMENT_TYPES = [
-  "Salaried",
-  "Self-employed",
-  "Business owner",
-  "Homemaker",
-  "Retired",
-  "Student",
-  "Others",
-];
-const INCOME_BANDS = ["<RM3k", "RM3-6k", "RM6-10k", "RM10-20k", ">RM20k"];
 const INSURANCE_PLANS = [
   "Medical Card",
   "Life / Term",
@@ -47,11 +30,6 @@ const initialForm = {
   icNumber: "",
   participantType: "",
   currentInsuranceCompany: "",
-  ageBand: "",
-  maritalStatus: "",
-  employmentType: "",
-  employmentOther: "",
-  monthlyPersonalIncome: "",
   existingInsurancePlans: [],
   financialPriorities: [],
   consent: false,
@@ -170,11 +148,6 @@ export default function App() {
       agentId: "",
       gmName: "",
       currentInsuranceCompany: form.currentInsuranceCompany,
-      ageBand: form.ageBand,
-      maritalStatus: form.maritalStatus,
-      employmentType: form.employmentType,
-      employmentOther: form.employmentOther,
-      monthlyPersonalIncome: form.monthlyPersonalIncome,
       existingInsurancePlans: form.existingInsurancePlans,
       financialPriorities: form.financialPriorities,
       participantType: form.participantType,
@@ -245,7 +218,7 @@ export default function App() {
               />
             </div>
             <label className="field full-width">
-              <span>Current Insurance Company (optional)</span>
+              <span>Current Insurance Company</span>
               <input name="currentInsuranceCompany" value={form.currentInsuranceCompany} onChange={update} maxLength="100" autoComplete="off" />
             </label>
           </div>
@@ -253,16 +226,6 @@ export default function App() {
 
         <section>
           <h2>2. Your Profile</h2>
-          <ChoiceGroup legend="Age Band" name="ageBand" options={AGE_BANDS} value={form.ageBand} onChange={update} />
-          <ChoiceGroup legend="Marital Status" name="maritalStatus" options={MARITAL_STATUSES} value={form.maritalStatus} onChange={update} />
-          <ChoiceGroup legend="Employment Type" name="employmentType" options={EMPLOYMENT_TYPES} value={form.employmentType} onChange={update} />
-          {form.employmentType === "Others" && (
-            <label className="field conditional-field">
-              <span>Please specify *</span>
-              <input name="employmentOther" value={form.employmentOther} onChange={update} required maxLength="80" autoComplete="off" />
-            </label>
-          )}
-          <ChoiceGroup legend="Monthly Personal Income" name="monthlyPersonalIncome" options={INCOME_BANDS} value={form.monthlyPersonalIncome} onChange={update} />
           <CheckboxGroup legend="Existing Insurance Plans" name="existingInsurancePlans" options={INSURANCE_PLANS} values={form.existingInsurancePlans} onChange={updateArray} />
           <CheckboxGroup legend="Financial Priorities in the next 12 months" name="financialPriorities" options={FINANCIAL_PRIORITIES} values={form.financialPriorities} onChange={updateArray} />
         </section>
