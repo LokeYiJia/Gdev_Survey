@@ -216,8 +216,7 @@ export default function App() {
         noValidate={false}
       >
         <header className="survey-header">
-          <div className="brand-name">Great Eastern</div>
-          <h1>SURVEY FORM</h1>
+          <h1>Free Health Check Registration</h1>
         </header>
 
         <div className="form-layout">

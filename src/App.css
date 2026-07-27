@@ -1,5 +1,5 @@
 :root {
-  font-family: Helvetica, Arial, sans-serif;
+  font-family: "Public Sans", Arial, Helvetica, sans-serif;
   color: #18263a;
   background: #f4f7fb;
   font-synthesis: none;
@@ -22,7 +22,7 @@ button, input { font: inherit; }
   margin: 0;
   overflow: hidden;
   padding: 115px 24px 190px;
-  background: #fff url("/survey-background.png") center / 100% 100% no-repeat;
+  background: #fff url("/survey-background-v2.png") center / 100% 100% no-repeat;
 }
 
 .survey-header,
@@ -53,9 +53,11 @@ button, input { font: inherit; }
 .survey-header h1 {
   grid-column: 2;
   margin: 0;
-  color: #003b71;
+  color: #ed1b2f;
+  font-family: "Merriweather", Georgia, "Times New Roman", serif;
   font-size: clamp(1.75rem, 5vw, 2.65rem);
-  letter-spacing: 0.06em;
+  font-weight: 700;
+  letter-spacing: 0.01em;
   text-align: center;
 }
 
