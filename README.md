@@ -44,20 +44,29 @@ Do not commit a real webhook URL. `.env.example` intentionally contains only an 
 Create or use a sheet tab named exactly `GDev Leads Gathering`. Row 1 must have these exact headers, in this order:
 
 1. Date
-2. Full Name
-3. Mobile Number
-4. IC Number
-5. Who Are You
-6. Agent Name
-7. Agent ID
-8. GM Name
-9. Current Insurance Company
-10. Existing Insurance Plan
-11. Financial Priorities in the next 12 months
+2. Roadshow Location
+3. Roadshow State
+4. Full Name
+5. Mobile Number
+6. IC Num (last 4 digits)
+7. Agent Name
+8. Agent ID
+9. GM Name
+10. Current Insurance Company
+11. Age Band
+12. Marital Status
+13. Employment Type
+14. Monthly Income
+15. Existing Insurance Plan
+16. Financial Priorities in the next 12 months
+17. Presentation done
+18. Potential follow up
+19. On the spot close case
+20. ANP
+21. Submission Timestamp
+22. Submission ID
 
-The current survey does not collect agent/GM details, so Apps Script writes blank values for those columns. The browser accepts and submits exactly 12 IC digits to the `IC Number` column.
-
-Apps Script verifies row 1 without modifying it, escapes formula-like text, and uses a script-wide lock around each append. Before each append it enforces plain-text formatting across the Mobile Number and IC Number data columns, writes both values with a Sheets text marker, and reapplies plain text to the new cells so leading zeroes survive Google Sheets table auto-formatting.
+Apps Script verifies row 1 without modifying it and uses a script-wide lock. The first submit appends the 16 lead fields, four blank outcome cells, a timestamp, and a UUID. The popup submit finds that UUID and updates only the four outcome cells in the same row. `Submission ID` can be hidden in Google Sheets but must not be deleted.
 
 ## Google Apps Script deployment
 
@@ -71,27 +80,33 @@ Every Apps Script code change requires a **new Web App deployment version** (or 
 
 ## Submission contract
 
-The Pages Function accepts only `POST` with `application/json`, limits request size, trims text, validates dates, phone numbers, exactly 12 IC digits, allowlisted choices, required checkbox groups, participant type, and consent.
+The Pages Function accepts only `POST` with `application/json`, limits request size, trims text, and validates the GE question set, required checkbox groups, consent, the three Yes/No popup fields, and numeric ANP.
 
 It forwards only these keys to Apps Script, in this order:
 
 ```json
 {
+  "action": "create",
   "date": "",
+  "roadshowLocation": "",
+  "roadshowState": "",
   "fullName": "",
   "mobileNumber": "",
-  "icNum": "",
-  "whoAreYou": "",
+  "icLast4": "",
   "agentName": "",
   "agentId": "",
   "gmName": "",
   "currentInsuranceCompany": "",
+  "ageBand": "",
+  "maritalStatus": "",
+  "employmentType": "",
+  "monthlyPersonalIncome": "",
   "existingInsurancePlans": "",
   "financialPriorities": ""
 }
 ```
 
-Checkbox arrays are converted to comma-separated strings. Consent is validated but not forwarded. The participant type is forwarded as `whoAreYou`.
+The popup sends a second request with `action: "complete"`, the UUID, the three Yes/No answers, and ANP. Checkbox arrays are converted to comma-separated strings and consent is validated but not forwarded.
 
 The frontend does not set a short request timeout or automatically retry. It disables submission immediately and also uses an in-flight guard against duplicate clicks. Values are cleared only after confirmed success and retained after failure.
 

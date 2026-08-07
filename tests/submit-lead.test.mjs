@@ -4,167 +4,93 @@ import { join } from "node:path";
 import test from "node:test";
 import { onRequest } from "../functions/api/submit-lead.js";
 
-const validPayload = () => ({
-  date: "2026-07-23",
-  fullName: "  Alex Tan  ",
-  mobileNumber: "+60 12-345 6789",
-  icNum: "012345678901",
-  agentName: "",
-  agentId: "",
-  gmName: "",
-  currentInsuranceCompany: " Prudential ",
-  existingInsurancePlans: ["Medical Card", "Savings"],
-  financialPriorities: ["Build emergency fund"],
-  participantType: "GDG KL Participant",
+const submissionId = "123e4567-e89b-12d3-a456-426614174000";
+const env = { GOOGLE_SHEETS_WEBHOOK_URL: "https://script.google.test/web-app" };
+const validCreate = () => ({
+  action: "create", date: "2026-08-07", roadshowLocation: " Lotus Kepong ",
+  roadshowState: "Kuala Lumpur", fullName: " Alex Tan ", mobileNumber: "+60 12 345 6789",
+  icLast4: "0463", agentName: "Test Agent", agentId: "GE123", gmName: "Test GM",
+  currentInsuranceCompany: "Prudential", ageBand: "25-34", maritalStatus: "Single",
+  employmentType: "Salaried", monthlyPersonalIncome: "RM3-6k",
+  existingInsurancePlans: ["Medical Card"], financialPriorities: ["Build emergency fund"],
   consent: true,
 });
-
-const call = (payload = validPayload(), options = {}) =>
-  onRequest({
-    request: new Request("https://survey.example/api/submit-lead", {
-      method: options.method || "POST",
-      headers: { "Content-Type": options.contentType || "application/json" },
-      body:
-        (options.method || "POST") === "GET"
-          ? undefined
-          : options.rawBody ?? JSON.stringify(payload),
-    }),
-    env: {
-      GOOGLE_SHEETS_WEBHOOK_URL: "https://script.google.test/web-app",
-      ...options.env,
-    },
-  });
+const validComplete = () => ({
+  action: "complete", submissionId, presentationDone: "Yes", potentialFollowUp: "No",
+  onTheSpotCloseCase: "No", anp: "1200.50",
+});
+const requestFor = (body, options = {}) => new Request("https://survey.example/api/submit-lead", {
+  method: options.method || "POST",
+  headers: { "Content-Type": options.contentType || "application/json" },
+  body: (options.method || "POST") === "GET" ? undefined : options.rawBody ?? JSON.stringify(body),
+});
 
 test("rejects non-POST methods", async () => {
-  const response = await call(undefined, { method: "GET" });
+  const response = await onRequest({ request: requestFor(null, { method: "GET" }), env });
   assert.equal(response.status, 405);
-  assert.deepEqual(await response.json(), {
-    success: false,
-    error: "Method not allowed.",
-  });
+  assert.equal(response.headers.get("Allow"), "POST");
 });
 
-test("rejects invalid content types", async () => {
-  const response = await call(validPayload(), { contentType: "text/plain" });
-  assert.equal(response.status, 415);
-});
-
-test("rejects oversized bodies", async () => {
-  const response = await call(undefined, {
-    rawBody: JSON.stringify({ padding: "x".repeat(17_000) }),
-  });
-  assert.equal(response.status, 413);
-});
-
-test("rejects invalid participant types before calling Apps Script", async (t) => {
-  const originalFetch = globalThis.fetch;
-  let called = false;
-  globalThis.fetch = async () => {
-    called = true;
-    return new Response('{"success":true}');
-  };
-  t.after(() => {
-    globalThis.fetch = originalFetch;
-  });
-
-  const payload = validPayload();
-  payload.participantType = "Unknown participant";
-  const response = await call(payload);
-  assert.equal(response.status, 400);
-  assert.equal(called, false);
-});
-
-test("requires consent and non-empty checkbox arrays", async () => {
-  const payload = validPayload();
-  payload.consent = false;
-  payload.existingInsurancePlans = [];
-  const response = await call(payload);
-  assert.equal(response.status, 400);
-  const result = await response.json();
-  assert.match(result.error, /at least one selection/i);
-});
-
-test("forwards only expected trimmed Sheet fields in exact key order", async (t) => {
+test("creates a lead and forwards the GE fields in order", async (t) => {
   const originalFetch = globalThis.fetch;
   let forwarded;
   globalThis.fetch = async (_url, init) => {
     forwarded = JSON.parse(init.body);
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    return Response.json({ success: true, submissionId });
   };
-  t.after(() => {
-    globalThis.fetch = originalFetch;
-  });
-
-  const response = await call();
+  t.after(() => { globalThis.fetch = originalFetch; });
+  const response = await onRequest({ request: requestFor(validCreate()), env });
   assert.equal(response.status, 200);
-  assert.deepEqual(await response.json(), { success: true });
+  assert.deepEqual(await response.json(), { success: true, submissionId });
   assert.deepEqual(Object.keys(forwarded), [
-    "date",
-    "fullName",
-    "mobileNumber",
-    "icNum",
-    "whoAreYou",
-    "agentName",
-    "agentId",
-    "gmName",
-    "currentInsuranceCompany",
-    "existingInsurancePlans",
+    "action", "date", "roadshowLocation", "roadshowState", "fullName", "mobileNumber",
+    "icLast4", "agentName", "agentId", "gmName", "currentInsuranceCompany", "ageBand",
+    "maritalStatus", "employmentType", "monthlyPersonalIncome", "existingInsurancePlans",
     "financialPriorities",
   ]);
-  assert.equal(forwarded.fullName, "Alex Tan");
-  assert.equal(forwarded.currentInsuranceCompany, "Prudential");
-  assert.equal(forwarded.icNum, "012345678901");
-  assert.equal(forwarded.existingInsurancePlans, "Medical Card, Savings");
-  assert.equal(forwarded.whoAreYou, "GDG KL Participant");
+  assert.equal(forwarded.roadshowLocation, "Lotus Kepong");
   assert.equal("consent" in forwarded, false);
   assert.equal("participantType" in forwarded, false);
-  assert.equal("ageBand" in forwarded, false);
-  assert.equal("maritalStatus" in forwarded, false);
-  assert.equal("employmentType" in forwarded, false);
-  assert.equal("monthlyPersonalIncome" in forwarded, false);
 });
 
-test("rejects an IC number that is not exactly 12 digits", async () => {
-  const payload = validPayload();
-  payload.icNum = "1234";
-  const response = await call(payload);
-  assert.equal(response.status, 400);
-  const result = await response.json();
-  assert.equal(result.error, "icNum must contain exactly 12 digits.");
-});
-
-test("propagates Google Apps Script JSON failures without exposing its URL", async (t) => {
+test("completes the same lead with only the popup fields", async (t) => {
   const originalFetch = globalThis.fetch;
-  const originalError = console.error;
-  console.error = () => {};
-  globalThis.fetch = async () =>
-    new Response(JSON.stringify({ success: false, error: "Header mismatch." }), {
-      status: 200,
-    });
-  t.after(() => {
-    globalThis.fetch = originalFetch;
-    console.error = originalError;
-  });
-
-  const response = await call();
-  assert.equal(response.status, 502);
-  const result = await response.json();
-  assert.deepEqual(result, { success: false, error: "Header mismatch." });
-  assert.equal(JSON.stringify(result).includes("script.google.test"), false);
+  let forwarded;
+  globalThis.fetch = async (_url, init) => {
+    forwarded = JSON.parse(init.body);
+    return Response.json({ success: true });
+  };
+  t.after(() => { globalThis.fetch = originalFetch; });
+  const response = await onRequest({ request: requestFor(validComplete()), env });
+  assert.equal(response.status, 200);
+  assert.deepEqual(forwarded, validComplete());
 });
 
-test("frontend submits only to /api/submit-lead and contains no webhook secret", async () => {
-  const sourceFiles = (await readdir("src")).filter((name) => /\.(jsx?|css)$/.test(name));
-  const source = (
-    await Promise.all(sourceFiles.map((name) => readFile(join("src", name), "utf8")))
-  ).join("\n");
-  const fetchTargets = [...source.matchAll(/fetch\(\s*["'`]([^"'`]+)["'`]/g)].map(
-    (match) => match[1],
-  );
-  assert.deepEqual(fetchTargets, ["/api/submit-lead"]);
+test("rejects invalid state, popup answers, and ANP", async () => {
+  assert.equal((await onRequest({ request: requestFor({ ...validCreate(), roadshowState: "Sabah" }), env })).status, 400);
+  assert.equal((await onRequest({ request: requestFor({ ...validComplete(), presentationDone: "Maybe" }), env })).status, 400);
+  const response = await onRequest({ request: requestFor({ ...validComplete(), anp: "RM 1,200" }), env });
+  assert.equal(response.status, 400);
+  assert.match((await response.json()).error, /ANP must be a number/i);
+});
+
+test("requires checkbox selections and consent", async () => {
+  const response = await onRequest({
+    request: requestFor({ ...validCreate(), existingInsurancePlans: [], consent: false }), env,
+  });
+  assert.equal(response.status, 400);
+});
+
+test("rejects invalid content types and oversized bodies", async () => {
+  assert.equal((await onRequest({ request: requestFor({}, { contentType: "text/plain" }), env })).status, 415);
+  assert.equal((await onRequest({ request: requestFor(null, { rawBody: JSON.stringify({ padding: "x".repeat(21_000) }) }), env })).status, 413);
+});
+
+test("frontend calls only the same-origin API and exposes no webhook", async () => {
+  const files = (await readdir("src")).filter((name) => /\.(jsx?|css)$/.test(name));
+  const source = (await Promise.all(files.map((name) => readFile(join("src", name), "utf8")))).join("\n");
+  const targets = [...source.matchAll(/fetch\(\s*["'`]([^"'`]+)["'`]/g)].map((match) => match[1]);
+  assert.deepEqual(targets, ["/api/submit-lead"]);
   assert.equal(source.includes("GOOGLE_SHEETS_WEBHOOK_URL"), false);
   assert.equal(/script\.google(?:usercontent)?\.com/i.test(source), false);
 });
