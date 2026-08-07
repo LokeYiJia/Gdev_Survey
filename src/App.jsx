@@ -177,7 +177,7 @@ export default function App() {
   return (
     <main className="page-shell">
       <form className="survey" onSubmit={createSubmission} autoComplete="off">
-        <header className="survey-header"><h1>Free Health Check Registration</h1></header>
+        <header className="survey-header"><h1>Great Eastern Survey</h1></header>
 
         <div className="form-layout">
           <section>
