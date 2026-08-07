@@ -5,6 +5,13 @@ const ROADSHOW_STATES = [
   "Pulau Pinang", "Perak", "Perlis", "Selangor", "Terengganu",
   "Kuala Lumpur", "Putrajaya",
 ];
+const ROADSHOW_LOCATIONS = [
+  "Gleneagles",
+  "Mahkota Medical Center",
+  "KPJ Specialist Hospital",
+  "Sunway Medical Center",
+  "Hospital Seri Botani",
+];
 const AGE_BANDS = ["<25", "25-34", "35-44", "45-54", "55-64", "65+"];
 const MARITAL_STATUSES = ["Single", "Married", "Married with children", "Divorced / widowed"];
 const EMPLOYMENT_TYPES = ["Salaried", "Self-employed", "Business owner", "Homemaker", "Retired", "Student", "Others"];
@@ -205,7 +212,7 @@ export default function App() {
             <h2>3. For Agent Use</h2>
             <div className="field-grid">
               <label className="field"><span>Date *</span><input name="date" type="date" value={form.date} onChange={update} required autoComplete="off" /></label>
-              <label className="field"><span>Roadshow Location (e.g. Lotus Kepong) *</span><input name="roadshowLocation" value={form.roadshowLocation} onChange={update} required maxLength="150" autoComplete="off" /></label>
+              <label className="field"><span>Roadshow Location *</span><select name="roadshowLocation" value={form.roadshowLocation} onChange={update} required autoComplete="off"><option value="" disabled>Select a location</option>{ROADSHOW_LOCATIONS.map((location) => <option value={location} key={location}>{location}</option>)}</select></label>
               <label className="field full-width"><span>Roadshow State *</span><select name="roadshowState" value={form.roadshowState} onChange={update} required autoComplete="off"><option value="" disabled>Select a state</option>{ROADSHOW_STATES.map((state) => <option value={state} key={state}>{state}</option>)}</select></label>
               <label className="field"><span>Agent Name *</span><input name="agentName" value={form.agentName} onChange={update} required maxLength="150" autoComplete="off" /></label>
               <label className="field"><span>Agent ID *</span><input name="agentId" value={form.agentId} onChange={update} required maxLength="80" autoComplete="off" /></label>

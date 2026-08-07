@@ -7,7 +7,7 @@ import { onRequest } from "../functions/api/submit-lead.js";
 const submissionId = "123e4567-e89b-12d3-a456-426614174000";
 const env = { GOOGLE_SHEETS_WEBHOOK_URL: "https://script.google.test/web-app" };
 const validCreate = () => ({
-  action: "create", date: "2026-08-07", roadshowLocation: " Lotus Kepong ",
+  action: "create", date: "2026-08-07", roadshowLocation: " Gleneagles ",
   roadshowState: "Kuala Lumpur", fullName: " Alex Tan ", mobileNumber: "+60 12 345 6789",
   icLast4: "0463", agentName: "Test Agent", agentId: "GE123", gmName: "Test GM",
   currentInsuranceCompany: "Prudential", ageBand: "25-34", maritalStatus: "Single",
@@ -48,7 +48,7 @@ test("creates a lead and forwards the GE fields in order", async (t) => {
     "maritalStatus", "employmentType", "monthlyPersonalIncome", "existingInsurancePlans",
     "financialPriorities",
   ]);
-  assert.equal(forwarded.roadshowLocation, "Lotus Kepong");
+  assert.equal(forwarded.roadshowLocation, "Gleneagles");
   assert.equal("consent" in forwarded, false);
   assert.equal("participantType" in forwarded, false);
 });
@@ -67,6 +67,7 @@ test("completes the same lead with only the popup fields", async (t) => {
 });
 
 test("rejects invalid state, popup answers, and ANP", async () => {
+  assert.equal((await onRequest({ request: requestFor({ ...validCreate(), roadshowLocation: "Unknown Hospital" }), env })).status, 400);
   assert.equal((await onRequest({ request: requestFor({ ...validCreate(), roadshowState: "Sabah" }), env })).status, 400);
   assert.equal((await onRequest({ request: requestFor({ ...validComplete(), presentationDone: "Maybe" }), env })).status, 400);
   const response = await onRequest({ request: requestFor({ ...validComplete(), anp: "RM 1,200" }), env });

@@ -15,6 +15,13 @@ const OUTCOME_LIMITS = {
   presentationDone: 3, potentialFollowUp: 3, onTheSpotCloseCase: 3, anp: 20,
 };
 const ALLOWED = {
+  roadshowLocation: [
+    "Gleneagles",
+    "Mahkota Medical Center",
+    "KPJ Specialist Hospital",
+    "Sunway Medical Center",
+    "Hospital Seri Botani",
+  ],
   roadshowState: [
     "Johor", "Kedah", "Kelantan", "Melaka", "Negeri Sembilan", "Pahang",
     "Pulau Pinang", "Perak", "Perlis", "Selangor", "Terengganu",
@@ -79,6 +86,7 @@ function validateCreate(data) {
   }
   if (!/^\d{4}$/.test(cleaned.icLast4)) throw new Error("IC last 4 must contain exactly 4 numbers");
   if (!validDate(cleaned.date)) throw new Error("Invalid date");
+  if (!ALLOWED.roadshowLocation.includes(cleaned.roadshowLocation)) throw new Error("Invalid roadshow location");
   if (!ALLOWED.roadshowState.includes(cleaned.roadshowState)) throw new Error("Invalid roadshow state");
   if (!ALLOWED.ageBand.includes(cleaned.ageBand)
     || !ALLOWED.maritalStatus.includes(cleaned.maritalStatus)

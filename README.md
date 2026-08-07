@@ -12,6 +12,8 @@ React form
 
 The browser never receives or calls the Apps Script URL. There is no login or form access code.
 
+Roadshow Location is restricted to Gleneagles, Mahkota Medical Center, KPJ Specialist Hospital, Sunway Medical Center, and Hospital Seri Botani.
+
 ## Local development
 
 Requirements: Node.js 18 or newer.
